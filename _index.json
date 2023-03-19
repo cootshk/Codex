@@ -26,5 +26,25 @@
     "requiredIf": [
       "create"
     ]
+  },
+  {
+    "title": "Better End",
+    "license": "CC BY-SA 3.0",
+    "descriptions": "/descriptions/better-end.json",
+    "lang": "en_us",
+    "icon": "/icons/better-end.png",
+    "requiredIf": [
+      "betterend"
+    ]
+  },
+  {
+    "title": "Better Nether",
+    "license": "CC BY-SA 3.0",
+    "descriptions": "/descriptions/better-nether.json",
+    "lang": "en_us",
+    "icon": "/icons/better-nether.png",
+    "requiredIf": [
+      "betternether"
+    ]
   }
 ]

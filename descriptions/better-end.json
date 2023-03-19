@@ -1,0 +1,14 @@
+{
+    "description.betterend.amber_gem": "Amber Gems are obtained by crafting four Raw Amber, which can only be obtained from Amber Ore in the Amber Land biome. They are used in infusion rituals and to craft eyes of ender.",
+    "description.betterend.crystal_shards": "Large single pillars of Aurora Blocks can be found while exploring in any biome, but are extremely common in the Crystal Mountains biome. They are used in infusion rituals, to make eyes of ender, and are a key component of eternal crystals.",
+    "description.betterend.raw_amber": "Raw Amber is obtained by mining Amber Ore in the Amber Land biome. It is used to craft Amber Gems and is a key component of eternal crystals.",
+    "description.betterend.ender_dust": "End dust can be made by placing an ender pearl and a netherite or aeternium smith hammer in an anvil. It can also be made by placing an ender shard and any type of smith hammer in an anvil. It is used to craft terminite and to make a potion of end veil.",
+    "description.betterend.eternal_crystal": "Eternal crystals are crafted by an infusion ritual, using an End Crystal, four ender shards and four crystal shards.",
+    "description.betterend.ender_shard": "Ender shards are obtained from ender ore. They are used in infusion rituals and are a key component in eternal crystals. They can also be crafted into end dust.",
+    "description.betterend.amber_root_seed": "Amber root seed is an item that is used to grow raw amber root. It is dropped when harvesting raw amber roots and can only be placed on amber moss.",
+    "description.betterend.amber_root_raw": "This plant grows in the Amber Land biome. It can be eaten or crafted into sugar.",
+    "description.betterend.shadow_berry": "Shadow berry seeds are an item that are used to plant shadow berries. They can be crafted from a shadow berry (uncooked) and drop when shadow berries are harvested. They can only be planted on shadow grass.",
+    "description.betterend.shadow_berry_cooked": "Cooked shadow berries are made by placing a shadow berry in a furnace, smoker, or on a campfire. They can be eaten or crafted into shadow berry jelly.",
+    "description.betterend.shadow_berry_jelly": "Shadow berry jelly is crafted using a cooked shadow berry, sugar, gelatine, and either a water bottle or water bucket. It can be eaten and gives the player 20 seconds of night vision.",
+    "description.betterend.shadow_berry_raw": "The shadow berry is found in the Shadow Forest biome. It can be eaten, crafted into cave pumpkin pie, or cooked."
+}
