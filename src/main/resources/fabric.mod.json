@@ -29,6 +29,6 @@
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",
     "minecraft": "${minecraft_version}",
-    "owo": ">=0.12.22+1.21.9"
+    "owo": ">=${owo_version}"
   }
 }

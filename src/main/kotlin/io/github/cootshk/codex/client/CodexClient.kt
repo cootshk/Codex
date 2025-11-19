@@ -18,7 +18,7 @@ class CodexClient : ClientModInitializer {
         KeyBindingHelper.registerKeyBinding(key)
         ClientTickEvents.END_CLIENT_TICK.register { client ->
             while (key.wasPressed()) {
-                CodexLogger.getLogger().info("Opening search screen!")
+                logger.info("Opening search screen!")
                 client.setScreen(CodexQuickSearchScreen())
             }
         }

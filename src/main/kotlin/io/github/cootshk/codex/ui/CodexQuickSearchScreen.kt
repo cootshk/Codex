@@ -13,13 +13,9 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     DataSource.asset(
         Identifier.of("codex:codex_ui_model"))) {
 
-    private lateinit var root: FlowLayout;
     private lateinit var textBoxComponent: TextBoxComponent;
 
-    override fun build(rootComponent: FlowLayout?) {
-        println("Handling keypress!")
-        if (rootComponent == null) return;
-        root = rootComponent;
+    override fun build(rootComponent: FlowLayout) {
         textBoxComponent = rootComponent.childById(TextBoxComponent::class.java, "searchBox")
         textBoxComponent.isVisible = true
         textBoxComponent.active = true
@@ -46,6 +42,6 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     override fun keyReleased(keyInput: KeyInput): Boolean {
-        return textBoxComponent.keyPressed(keyInput) || super.keyReleased(keyInput)
+        return textBoxComponent.keyReleased(keyInput) || super.keyReleased(keyInput)
     }
 }

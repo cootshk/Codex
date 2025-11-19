@@ -37,6 +37,8 @@ repositories {
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
+
+    // owo-lib
     maven("https://maven.wispforest.io")
 }
 
@@ -68,7 +70,8 @@ tasks.processResources {
             "version" to project.version,
             "minecraft_version" to project.property("minecraft_version"),
             "loader_version" to project.property("loader_version"),
-            "kotlin_loader_version" to project.property("kotlin_loader_version")
+            "kotlin_loader_version" to project.property("kotlin_loader_version"),
+            "owo_version" to project.property("owo_version")
         )
     }
 }
