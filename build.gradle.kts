@@ -57,6 +57,10 @@ dependencies {
     // include this if you don't want force your users to install owo
     // sentinel will warn them and give the option to download it automatically
     include("io.wispforest:owo-sentinel:${properties["owo_version"]}")
+
+    // Fuzzywuzzy
+    implementation("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
+    include("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
 }
 
 tasks.processResources {

@@ -3,7 +3,7 @@
     <components>
         <flow-layout direction="vertical">
             <children>
-                <flow-layout direction="vertical">
+                <flow-layout direction="vertical" id="searchContainer">
                     <children>
                         <flow-layout direction="horizontal">
                             <children>
@@ -41,6 +41,49 @@
                     </padding>
                     <vertical-alignment>center</vertical-alignment>
                 </flow-layout>
+                <collapsible expanded="true" id="mathContainer">
+                    <children>
+                        <flow-layout direction="horizontal" id="mathBox">
+                            <children>
+                                <label>
+                                    <text>=null</text>
+                                    <cursor-style>pointer</cursor-style>
+                                </label>
+                            </children>
+                            <surface>
+                                <blur quality="20" size="30"/>
+                            </surface>
+                        </flow-layout>
+                    </children>
+                    <allow-overflow>true</allow-overflow>
+                    <horizontal-alignment>left</horizontal-alignment>
+                    <vertical-alignment>top</vertical-alignment>
+                    <sizing>
+                        <horizontal method="fixed">0</horizontal>
+                        <vertical method="fixed">0</vertical>
+                    </sizing>
+                </collapsible>
+                <collapsible expanded="true" id="resultsContainer">
+                    <children>
+                        <scroll direction="vertical" id="resultsArea">
+                            <flow-layout direction="vertical" id="resultsBox">
+                                <children>
+
+                                </children>
+                            </flow-layout>
+                            <sizing>
+                                <vertical method="fixed">20</vertical>
+                            </sizing>
+                        </scroll>
+                    </children>
+                    <allow-overflow>true</allow-overflow>
+                    <horizontal-alignment>left</horizontal-alignment>
+                    <vertical-alignment>top</vertical-alignment>
+                    <sizing>
+                        <horizontal method="fixed">0</horizontal>
+                        <vertical method="fixed">0</vertical>
+                    </sizing>
+                </collapsible>
             </children>
             <allow-overflow>true</allow-overflow>
             <horizontal-alignment>center</horizontal-alignment>
