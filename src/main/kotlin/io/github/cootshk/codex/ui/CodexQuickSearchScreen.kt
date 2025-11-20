@@ -3,18 +3,18 @@ package io.github.cootshk.codex.ui
 import io.github.cootshk.codex.math.CodexMathHandler
 import io.github.cootshk.codex.mixin.IMixinCollapsibleContainer
 import io.github.cootshk.codex.util.Colors
+import io.github.cootshk.codex.util.RegistryLookup
 import io.wispforest.owo.ui.base.BaseUIModelScreen
 import io.wispforest.owo.ui.component.BoxComponent
-import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.component.LabelComponent
 import io.wispforest.owo.ui.component.TextBoxComponent
 import io.wispforest.owo.ui.container.CollapsibleContainer
-import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
+import io.wispforest.owo.ui.container.ScrollContainer
 import io.wispforest.owo.ui.core.Component
 import io.wispforest.owo.ui.core.Insets
-import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
+import me.xdrop.fuzzywuzzy.FuzzySearch
 import net.minecraft.client.gui.Element
 import net.minecraft.client.input.CharInput
 import net.minecraft.client.input.KeyInput
@@ -30,6 +30,7 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     private lateinit var textBoxComponent: TextBoxComponent
     private lateinit var resultsContainer: CollapsibleContainer
     private lateinit var resultsBox: FlowLayout
+    private lateinit var resultsArea: ScrollContainer<*>
     private lateinit var mathContainer: CollapsibleContainer
     private lateinit var mathBox: FlowLayout
     private lateinit var mathResult: LabelComponent
@@ -42,17 +43,19 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         textBoxComponent.setEditable(true) // minecraft makes .editable private D:
         this.setInitialFocus(textBoxComponent)
         coloredBox = rootComponent.childById(BoxComponent::class.java, "coloredBox")
-        resultsBox = rootComponent.childById(FlowLayout::class.java, "resultsBox")
         resultsContainer = rootComponent.childById(CollapsibleContainer::class.java, "resultsContainer")
+        resultsBox = rootComponent.childById(FlowLayout::class.java, "resultsBox")
+        resultsArea = rootComponent.childById(ScrollContainer::class.java, "resultsArea")
         mathContainer = rootComponent.childById(CollapsibleContainer::class.java, "mathContainer")
         mathBox = rootComponent.childById(FlowLayout::class.java, "mathBox")
         mathResult = rootComponent.childById(LabelComponent::class.java, "mathResult")
         hideBoxes()
-        hideCollapsibleContainerButton(mathContainer as IMixinCollapsibleContainer)
-        hideCollapsibleContainerButton(resultsContainer as IMixinCollapsibleContainer)
+        hideCollapsibleContainerButton(mathContainer)
+        hideCollapsibleContainerButton(resultsContainer)
     }
 
-    private fun hideCollapsibleContainerButton(container: IMixinCollapsibleContainer) {
+    private fun hideCollapsibleContainerButton(c: CollapsibleContainer) {
+        val container = c as IMixinCollapsibleContainer
         container.titleLayout.clearChildren()
         container.titleLayout.padding(Insets.of(0,0,0,0))
         container.contentLayout.surface(Surface.BLANK)
@@ -94,10 +97,15 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         }
         if (text.startsWith('=')) {
             showAnswerBox()
-            val result: String = CodexMathHandler.evaluate(text.substring(1))
+            val result: String = CodexMathHandler.evaluate(text.substring(1).trim())
             mathResult.text(Text.of(result))
         } else {
             showSearchBox()
+            // fill the search box
+            resultsBox.clearChildren()
+            for (child in getTopSearchResults(text.trim(), 4)) {
+                resultsBox.child(child)
+            }
         }
     }
 
@@ -124,14 +132,13 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     // Searching
-    private fun getTopSearchResults(num: Int): Array<FlowLayout> {
-        TODO("implement")
-//        if (textBoxComponent.text.isNullOrEmpty()) return arrayOf()
-//        val items: Array<String> = emptyArray()
-//        val results = FuzzySearch.extractTop(textBoxComponent.text, items.toList(), num)
-//        val out = results.map { result ->
-//            generateTemplate(Identifier.of(result.string))
-//        }
-//        return out.toTypedArray()
+    private fun getTopSearchResults(text: String, num: Int): Array<Component> {
+        if (textBoxComponent.text.isNullOrEmpty()) return arrayOf()
+        val items: Map<String, Any> = RegistryLookup.all
+        val results = FuzzySearch.extractTop(text, items.keys, num)
+        val out = results.map { result ->
+            CodexSearchResult.from(items[result.string]!!)
+        }
+        return out.toTypedArray()
     }
 }

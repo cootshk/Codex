@@ -1,5 +1,8 @@
 package io.github.cootshk.codex.util
 
+import io.github.cootshk.codex.impl.CodexSearchable
+import io.github.cootshk.codex.mixin.CodexEntityType
+import io.github.cootshk.codex.mixin.CodexItem
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 import net.minecraft.item.Item
@@ -8,24 +11,36 @@ import net.minecraft.registry.Registries
 object RegistryLookup {
 
     @JvmStatic
-    var items = lookupItems()
+    fun searchString(c: Any): String {
+        return (c as CodexSearchable).searchString()
+    }
+
+    @JvmStatic
+    var all: Map<String, Any> = lookup()
+
+    @JvmStatic
+    val items = lookupItems()
     // TODO: entities?
     @JvmStatic
-    var entities = lookupEntities()
+    val entities = lookupEntities()
 
-    private fun testLookup(items: Array<*>) {
-        println("Testing array...")
-        println("Count: ${items.count()}")
-        println("First: ${items.first()}")
-        println("Last: ${items.last()}")
+    @JvmStatic
+    fun lookupItems(): Map<String, Item> {
+        return Registries.ITEM.toList().toTypedArray().associateBy { item ->
+            searchString(item)
+        }
     }
-
-    fun lookupItems(): Array<Item> {
-        return Registries.ITEM.toList().toTypedArray()
-    }
-    fun lookupEntities(): Array<EntityType<Entity>> {
+    @JvmStatic
+    fun lookupEntities(): Map<String, EntityType<*>> {
         return Registries.ENTITY_TYPE.filter { entityType ->
             entityType.isSaveable
-        }.toList().toTypedArray() as Array<EntityType<Entity>>
+        }.associateBy { entityType ->
+            searchString(entityType)
+        }
+    }
+
+    @JvmStatic
+    fun lookup(): Map<String, Any> {
+        return items + entities
     }
 }

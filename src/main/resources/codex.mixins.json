@@ -4,6 +4,8 @@
   "package": "io.github.cootshk.codex.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "CodexEntityType",
+    "CodexItem",
     "IMixinCollapsibleContainer"
   ],
   "client": [

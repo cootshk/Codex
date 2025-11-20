@@ -80,9 +80,15 @@
                                         <children>
 
                                         </children>
+                                        <vertical-alignment>top</vertical-alignment>
+                                        <horizontal-alignment>left</horizontal-alignment>
+                                        <allow-overflow>true</allow-overflow>
                                     </flow-layout>
+                                    <allow-overflow>true</allow-overflow>
+                                    <vertical-alignment>top</vertical-alignment>
+                                    <horizontal-alignment>left</horizontal-alignment>
                                     <sizing>
-                                        <vertical method="fixed">20</vertical>
+                                        <vertical method="fixed">100</vertical>
                                     </sizing>
                                 </scroll>
                             </children>
