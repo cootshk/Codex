@@ -1,7 +1,11 @@
 package io.github.cootshk.codex.ui
 
+import io.github.cootshk.codex.math.CodexMathHandler
 import io.github.cootshk.codex.mixin.IMixinCollapsibleContainer
+import io.github.cootshk.codex.util.Colors
 import io.wispforest.owo.ui.base.BaseUIModelScreen
+import io.wispforest.owo.ui.component.BoxComponent
+import io.wispforest.owo.ui.component.LabelComponent
 import io.wispforest.owo.ui.component.TextBoxComponent
 import io.wispforest.owo.ui.container.CollapsibleContainer
 import io.wispforest.owo.ui.container.FlowLayout
@@ -9,6 +13,7 @@ import io.wispforest.owo.ui.core.Surface
 import net.minecraft.client.gui.Element
 import net.minecraft.client.input.CharInput
 import net.minecraft.client.input.KeyInput
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
 class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
@@ -16,11 +21,13 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     DataSource.asset(
         Identifier.of("codex:codex_ui_model"))) {
 
+    private lateinit var coloredBox: BoxComponent
     private lateinit var textBoxComponent: TextBoxComponent
-    private lateinit var mathContainer: CollapsibleContainer
     private lateinit var resultsContainer: CollapsibleContainer
     private lateinit var resultsBox: FlowLayout
+    private lateinit var mathContainer: CollapsibleContainer
     private lateinit var mathBox: FlowLayout
+    private lateinit var mathResult: LabelComponent
 
     override fun build(rootComponent: FlowLayout) {
         textBoxComponent = rootComponent.childById(TextBoxComponent::class.java, "searchBox")
@@ -29,10 +36,12 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         textBoxComponent.isFocused = true
         textBoxComponent.setEditable(true) // minecraft makes .editable private D:
         this.setInitialFocus(textBoxComponent)
+        coloredBox = rootComponent.childById(BoxComponent::class.java, "coloredBox")
         resultsBox = rootComponent.childById(FlowLayout::class.java, "resultsBox")
         resultsContainer = rootComponent.childById(CollapsibleContainer::class.java, "resultsContainer")
         mathContainer = rootComponent.childById(CollapsibleContainer::class.java, "mathContainer")
         mathBox = rootComponent.childById(FlowLayout::class.java, "mathBox")
+        mathResult = rootComponent.childById(LabelComponent::class.java, "mathResult")
         hideBoxes()
         (mathContainer as IMixinCollapsibleContainer).contentLayout.surface(Surface.BLANK)
         (resultsContainer as IMixinCollapsibleContainer).contentLayout.surface(Surface.BLANK)
@@ -74,24 +83,29 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         }
         if (text.startsWith('=')) {
             showAnswerBox()
+            val result: String = CodexMathHandler.evaluate(text.substring(1))
+            mathResult.text(Text.of(result))
         } else {
             showSearchBox()
         }
     }
 
     private fun showAnswerBox() {
+        coloredBox.color(Colors.ACCENT_MATH)
         if (resultsContainer.expanded())
             resultsContainer.toggleExpansion()
         if (!mathContainer.expanded())
             mathContainer.toggleExpansion()
     }
     private fun showSearchBox() {
+        coloredBox.color(Colors.ACCENT_SEARCH)
         if (!resultsContainer.expanded())
             resultsContainer.toggleExpansion()
         if (mathContainer.expanded())
             mathContainer.toggleExpansion()
     }
     private fun hideBoxes() {
+        coloredBox.color(Colors.ACCENT_NONE)
         if (resultsContainer.expanded())
             resultsContainer.toggleExpansion()
         if (mathContainer.expanded())

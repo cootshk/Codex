@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.yarn.yarn
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -61,6 +60,10 @@ dependencies {
     // Fuzzywuzzy
     implementation("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
     include("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
+
+    // Exp4j
+    implementation("net.objecthunter:exp4j:${project.property("exp4j_version")}")
+    include("net.objecthunter:exp4j:${project.property("exp4j_version")}")
 }
 
 tasks.processResources {

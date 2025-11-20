@@ -3,10 +3,18 @@
     <components>
         <flow-layout direction="vertical">
             <children>
-                <flow-layout direction="vertical" id="searchContainer">
+                <flow-layout direction="vertical" id="scrollArea">
                     <children>
                         <flow-layout direction="horizontal">
                             <children>
+                                <box id="coloredBox">
+                                    <color>#191414</color>
+                                    <fill>true</fill>
+                                    <sizing>
+                                        <horizontal method="fixed">5</horizontal>
+                                        <vertical method="fixed">20</vertical>
+                                    </sizing>
+                                </box>
                                 <text-box id="searchBox">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
@@ -29,23 +37,16 @@
                             <vertical-alignment>center</vertical-alignment>
                         </flow-layout>
                     </children>
-                    <surface>
-                        <flat>#16A5A0</flat>
-                    </surface>
                     <allow-overflow>true</allow-overflow>
                     <sizing>
                     </sizing>
-                    <padding>
-                        <right>-10</right>
-                        <left>10</left>
-                    </padding>
                     <vertical-alignment>center</vertical-alignment>
                 </flow-layout>
                 <collapsible expanded="true" id="mathContainer">
                     <children>
                         <flow-layout direction="horizontal" id="mathBox">
                             <children>
-                                <label>
+                                <label id="mathResult">
                                     <text>=null</text>
                                     <cursor-style>pointer</cursor-style>
                                 </label>
