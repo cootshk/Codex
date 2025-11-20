@@ -5,10 +5,15 @@ import io.github.cootshk.codex.mixin.IMixinCollapsibleContainer
 import io.github.cootshk.codex.util.Colors
 import io.wispforest.owo.ui.base.BaseUIModelScreen
 import io.wispforest.owo.ui.component.BoxComponent
+import io.wispforest.owo.ui.component.Components
 import io.wispforest.owo.ui.component.LabelComponent
 import io.wispforest.owo.ui.component.TextBoxComponent
 import io.wispforest.owo.ui.container.CollapsibleContainer
+import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.container.FlowLayout
+import io.wispforest.owo.ui.core.Component
+import io.wispforest.owo.ui.core.Insets
+import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.Surface
 import net.minecraft.client.gui.Element
 import net.minecraft.client.input.CharInput
@@ -43,8 +48,14 @@ class CodexQuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         mathBox = rootComponent.childById(FlowLayout::class.java, "mathBox")
         mathResult = rootComponent.childById(LabelComponent::class.java, "mathResult")
         hideBoxes()
-        (mathContainer as IMixinCollapsibleContainer).contentLayout.surface(Surface.BLANK)
-        (resultsContainer as IMixinCollapsibleContainer).contentLayout.surface(Surface.BLANK)
+        hideCollapsibleContainerButton(mathContainer as IMixinCollapsibleContainer)
+        hideCollapsibleContainerButton(resultsContainer as IMixinCollapsibleContainer)
+    }
+
+    private fun hideCollapsibleContainerButton(container: IMixinCollapsibleContainer) {
+        container.titleLayout.clearChildren()
+        container.titleLayout.padding(Insets.of(0,0,0,0))
+        container.contentLayout.surface(Surface.BLANK)
     }
 
     override fun setInitialFocus() {

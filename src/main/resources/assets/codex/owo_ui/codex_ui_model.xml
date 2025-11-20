@@ -36,55 +36,71 @@
                             </surface>
                             <vertical-alignment>center</vertical-alignment>
                         </flow-layout>
+                        <collapsible expanded="true" id="mathContainer">
+                            <children>
+                                <flow-layout direction="horizontal" id="mathBox">
+                                    <children>
+                                        <label id="mathResult">
+                                            <text>(null)</text>
+                                            <cursor-style>pointer</cursor-style>
+                                            <color>#AAAAAA</color>
+                                            <margins>
+                                                <all>5</all>
+                                                <right>-2</right>
+                                            </margins>
+                                        </label>
+                                    </children>
+                                    <sizing>
+                                        <horizontal method="fixed">195</horizontal>
+                                    </sizing>
+                                    <allow-overflow>false</allow-overflow>
+                                    <horizontal-alignment>left</horizontal-alignment>
+                                    <vertical-alignment>top</vertical-alignment>
+                                    <surface>
+                                        <vanilla-translucent/>
+                                        <blur quality="10" size="2"/>
+                                    </surface>
+                                </flow-layout>
+                            </children>
+                            <allow-overflow>true</allow-overflow>
+                            <horizontal-alignment>left</horizontal-alignment>
+                            <vertical-alignment>top</vertical-alignment>
+                            <sizing>
+                                <horizontal method="fixed">0</horizontal>
+                                <vertical method="fixed">0</vertical>
+                            </sizing>
+                            <margins>
+                                <left>-10</left>
+                            </margins>
+                        </collapsible>
+                        <collapsible expanded="true" id="resultsContainer">
+                            <children>
+                                <scroll direction="vertical" id="resultsArea">
+                                    <flow-layout direction="vertical" id="resultsBox">
+                                        <children>
+
+                                        </children>
+                                    </flow-layout>
+                                    <sizing>
+                                        <vertical method="fixed">20</vertical>
+                                    </sizing>
+                                </scroll>
+                            </children>
+                            <allow-overflow>true</allow-overflow>
+                            <horizontal-alignment>left</horizontal-alignment>
+                            <vertical-alignment>top</vertical-alignment>
+                            <sizing>
+                                <horizontal method="fixed">0</horizontal>
+                                <vertical method="fixed">0</vertical>
+                            </sizing>
+                        </collapsible>
                     </children>
                     <allow-overflow>true</allow-overflow>
                     <sizing>
                     </sizing>
+                    <horizontal-alignment>left</horizontal-alignment>
                     <vertical-alignment>center</vertical-alignment>
                 </flow-layout>
-                <collapsible expanded="true" id="mathContainer">
-                    <children>
-                        <flow-layout direction="horizontal" id="mathBox">
-                            <children>
-                                <label id="mathResult">
-                                    <text>=null</text>
-                                    <cursor-style>pointer</cursor-style>
-                                </label>
-                            </children>
-                            <surface>
-                                <blur quality="20" size="30"/>
-                            </surface>
-                        </flow-layout>
-                    </children>
-                    <allow-overflow>true</allow-overflow>
-                    <horizontal-alignment>left</horizontal-alignment>
-                    <vertical-alignment>top</vertical-alignment>
-                    <sizing>
-                        <horizontal method="fixed">0</horizontal>
-                        <vertical method="fixed">0</vertical>
-                    </sizing>
-                </collapsible>
-                <collapsible expanded="true" id="resultsContainer">
-                    <children>
-                        <scroll direction="vertical" id="resultsArea">
-                            <flow-layout direction="vertical" id="resultsBox">
-                                <children>
-
-                                </children>
-                            </flow-layout>
-                            <sizing>
-                                <vertical method="fixed">20</vertical>
-                            </sizing>
-                        </scroll>
-                    </children>
-                    <allow-overflow>true</allow-overflow>
-                    <horizontal-alignment>left</horizontal-alignment>
-                    <vertical-alignment>top</vertical-alignment>
-                    <sizing>
-                        <horizontal method="fixed">0</horizontal>
-                        <vertical method="fixed">0</vertical>
-                    </sizing>
-                </collapsible>
             </children>
             <allow-overflow>true</allow-overflow>
             <horizontal-alignment>center</horizontal-alignment>
@@ -95,6 +111,11 @@
             <sizing>
                 <horizontal method="fill">100</horizontal>
             </sizing>
+            <surface>
+                <blur quality="3" size="2"/>
+                <blur quality="2" size="10"/>
+                <blur quality="3" size="2"/>
+            </surface>
         </flow-layout>
     </components>
 </owo-ui>

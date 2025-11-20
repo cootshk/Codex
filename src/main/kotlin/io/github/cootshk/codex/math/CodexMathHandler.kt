@@ -1,6 +1,8 @@
 package io.github.cootshk.codex.math
 
 import net.objecthunter.exp4j.ExpressionBuilder
+import java.util.Locale
+import java.util.Locale.getDefault
 import kotlin.math.abs
 
 object CodexMathHandler {
@@ -14,11 +16,10 @@ object CodexMathHandler {
 
     @JvmStatic
     fun evaluate(line: String): String {
-        if (line.isBlank()) return ""
         val result: Double
         try {
         // Strip the `=` BEFORE passing it to evaluate
-            val exp = ExpressionBuilder(line)
+            val exp = ExpressionBuilder(line.lowercase())
                 .functions(functions)
                 .build()
             result = exp.evaluate()
