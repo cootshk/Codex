@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "codex",
+  "id": "quicksearch",
+  "provides": ["codex"],
   "version": "${version}",
   "name": "Codex",
   "description": "",
@@ -9,21 +10,21 @@
   ],
   "contact": {},
   "license": "GPL-3.0",
-  "icon": "assets/codex/icon.png",
+  "icon": "assets/quicksearch/icon.png",
   "environment": "client",
   "entrypoints": {
     "fabric-datagen": [
-      "io.github.cootshk.codex.client.CodexDataGenerator"
+      "io.github.cootshk.quicksearch.client.QuickSearchDataGenerator"
     ],
     "client": [
-      "io.github.cootshk.codex.client.CodexClient"
+      "io.github.cootshk.quicksearch.client.QuickSearchClient"
     ],
     "main": [
-      "io.github.cootshk.codex.Codex"
+      "io.github.cootshk.quicksearch.QuickSearch"
     ]
   },
   "mixins": [
-    "codex.mixins.json"
+    "quicksearch.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

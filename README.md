@@ -1,4 +1,4 @@
-# Codex
+# QuickSearch
 
 A complete rewrite of [IMB11's Codex](https://modrinth.com/mod/codex) for 1.21.10.
 

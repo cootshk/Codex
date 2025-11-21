@@ -1,6 +1,10 @@
 {
   "pack": {
-    "description": "The resource pack containing Codex's language and UI.",
-    "pack_format": 8
+    "description": "The resource pack containing QuickSearch's language and UI.",
+    "pack_format": 88,
+    "supported_formats": {
+      "min_inclusive": 1,
+      "max_inclusive": 1000
+    }
   }
 }
