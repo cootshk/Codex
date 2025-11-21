@@ -1,5 +1,7 @@
 package io.github.cootshk.quicksearch.ui
 
+import io.github.cootshk.quicksearch.QuickSearchLogger
+import io.github.cootshk.quicksearch.impl.Searchable
 import io.github.cootshk.quicksearch.math.QuickSearchMathHandler
 import io.github.cootshk.quicksearch.mixin.IMixinCollapsibleContainer
 import io.github.cootshk.quicksearch.util.Colors
@@ -20,11 +22,14 @@ import net.minecraft.client.input.CharInput
 import net.minecraft.client.input.KeyInput
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import org.lwjgl.glfw.GLFW
 
 class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     FlowLayout::class.java,
     DataSource.asset(
         Identifier.of("quicksearch:searchbar"))) {
+
+    private var logger = QuickSearchLogger.getLogger()
 
     private lateinit var coloredBox: BoxComponent
     private lateinit var textBoxComponent: TextBoxComponent
@@ -70,30 +75,29 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     override fun keyPressed(input: KeyInput): Boolean {
-        if (input.isEscape) return super.keyPressed(input)
-        val out = textBoxComponent.keyPressed(input) || textBoxComponent.keyPressed(input)
-        handleInput()
-        return out
+        return when (input.keycode) {
+            GLFW.GLFW_KEY_ESCAPE -> super.keyPressed(input)
+            // TODO: implement selection highlighting
+            GLFW.GLFW_KEY_UP -> true
+            GLFW.GLFW_KEY_DOWN -> true
+            else -> handleInput(textBoxComponent.keyPressed(input) || super.keyPressed(input))
+        }
     }
 
     override fun charTyped(input: CharInput): Boolean {
-        val out = textBoxComponent.charTyped(input) || super.charTyped(input)
-        handleInput()
-        return out
+        return handleInput(textBoxComponent.charTyped(input) || super.charTyped(input))
     }
 
     override fun keyReleased(keyInput: KeyInput): Boolean {
-        val out = textBoxComponent.keyReleased(keyInput) || super.keyReleased(keyInput)
-        handleInput()
-        return out
+        return handleInput(textBoxComponent.keyReleased(keyInput) || super.keyReleased(keyInput))
     }
 
     // Answer
-    private fun handleInput() {
+    private fun handleInput(`_`: Boolean): Boolean {
         val text = textBoxComponent.text
         if (text.isNullOrBlank() || text.isEmpty()) {
             hideBoxes()
-            return
+            return `_`
         }
         if (text.startsWith('=')) {
             showAnswerBox()
@@ -107,6 +111,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
                 resultsBox.child(child)
             }
         }
+        return `_`
     }
 
     private fun showAnswerBox() {
@@ -134,11 +139,11 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     // Searching
     private fun getTopSearchResults(text: String, num: Int): Array<Component> {
         if (textBoxComponent.text.isNullOrEmpty()) return arrayOf()
-        val items: Map<String, Any> = RegistryLookup.all
+        val items: Map<String, Searchable> = RegistryLookup.all
         val results = FuzzySearch.extractTop(text, items.keys, num)
-        val out = results.map { result ->
-            SearchResult.from(items[result.string]!!)
-        }
-        return out.toTypedArray()
+        if (results.isEmpty()) return arrayOf()
+        return results.map { result ->
+            SearchResult(items[result.string]!!)
+        }.toTypedArray()
     }
 }

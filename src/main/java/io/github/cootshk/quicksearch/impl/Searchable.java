@@ -1,8 +1,14 @@
 package io.github.cootshk.quicksearch.impl;
 
+import net.minecraft.text.Text;
+
 public interface Searchable {
-    String quickSearch$getSearchString();
+    Text quickSearch$getName();
+
+    default Text getName() {
+        return quickSearch$getName();
+    }
     default String searchString() {
-        return quickSearch$getSearchString();
+        return getName().getString();
     }
 }

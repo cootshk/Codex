@@ -2,6 +2,7 @@ package io.github.cootshk.quicksearch.util
 
 import io.github.cootshk.quicksearch.impl.Searchable
 import net.minecraft.entity.EntityType
+import net.minecraft.entity.Ownable
 import net.minecraft.item.Item
 import net.minecraft.registry.Registries
 
@@ -13,13 +14,13 @@ object RegistryLookup {
     }
 
     @JvmStatic
-    var all: Map<String, Any> = lookup()
-
-    @JvmStatic
     val items = lookupItems()
     // TODO: entities?
     @JvmStatic
     val entities = lookupEntities()
+
+    @JvmStatic
+    val all = lookup()
 
     @JvmStatic
     fun lookupItems(): Map<String, Item> {
@@ -30,14 +31,16 @@ object RegistryLookup {
     @JvmStatic
     fun lookupEntities(): Map<String, EntityType<*>> {
         return Registries.ENTITY_TYPE.filter { entityType ->
-            entityType.isSaveable
+            // TODO: fix this (doesn't filter anything currently)
+            !entityType.baseClass.isAssignableFrom(Ownable::class.java)
         }.associateBy { entityType ->
             searchString(entityType)
         }
     }
 
     @JvmStatic
-    fun lookup(): Map<String, Any> {
-        return items + entities
+    @Suppress("UNCHECKED_CAST")
+    fun lookup(): Map<String, Searchable> {
+        return (items as Map<String, Searchable>) + (entities as Map<String, Searchable>)
     }
 }
