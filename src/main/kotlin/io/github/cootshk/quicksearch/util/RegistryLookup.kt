@@ -2,7 +2,7 @@ package io.github.cootshk.quicksearch.util
 
 import io.github.cootshk.quicksearch.impl.Searchable
 import net.minecraft.entity.EntityType
-import net.minecraft.entity.Ownable
+import net.minecraft.entity.SpawnGroup
 import net.minecraft.item.Item
 import net.minecraft.registry.Registries
 
@@ -32,7 +32,7 @@ object RegistryLookup {
     fun lookupEntities(): Map<String, EntityType<*>> {
         return Registries.ENTITY_TYPE.filter { entityType ->
             // TODO: fix this (doesn't filter anything currently)
-            !entityType.baseClass.isAssignableFrom(Ownable::class.java)
+            !entityType.spawnGroup.equals(SpawnGroup.MISC)
         }.associateBy { entityType ->
             searchString(entityType)
         }
