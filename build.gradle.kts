@@ -43,27 +43,27 @@ repositories {
 
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}")
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
+    minecraft("com.mojang:minecraft:${project.property("minecraft_version")!!}")
+    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")!!}")
+    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")!!}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")!!}")
+    modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")!!}")
 
-    modImplementation("io.wispforest:owo-lib:${properties["owo_version"]}")
+    modImplementation("io.wispforest:owo-lib:${project.property("owo_version")!!}")
     // only if you plan to use owo-config
-    annotationProcessor("io.wispforest:owo-lib:${properties["owo_version"]}")
+    annotationProcessor("io.wispforest:owo-lib:${project.property("owo_version")!!}")
 
     // include this if you don't want force your users to install owo
     // sentinel will warn them and give the option to download it automatically
-    include("io.wispforest:owo-sentinel:${properties["owo_version"]}")
+    include("io.wispforest:owo-sentinel:${project.property("owo_version")!!}")
 
     // Fuzzywuzzy
-    implementation("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
-    include("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
+    implementation("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")!!}")
+    include("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")!!}")
 
     // Exp4j
-    implementation("net.objecthunter:exp4j:${project.property("exp4j_version")}")
-    include("net.objecthunter:exp4j:${project.property("exp4j_version")}")
+    implementation("net.objecthunter:exp4j:${project.property("exp4j_version")!!}")
+    include("net.objecthunter:exp4j:${project.property("exp4j_version")!!}")
 }
 
 tasks.processResources {
@@ -75,10 +75,10 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand(
             "version" to project.version,
-            "minecraft_version" to project.property("minecraft_version"),
-            "loader_version" to project.property("loader_version"),
-            "kotlin_loader_version" to project.property("kotlin_loader_version"),
-            "owo_version" to project.property("owo_version")
+            "minecraft_version" to project.property("minecraft_version")!!,
+            "loader_version" to project.property("loader_version")!!,
+            "kotlin_loader_version" to project.property("kotlin_loader_version")!!,
+            "owo_version" to project.property("owo_version")!!
         )
     }
 }

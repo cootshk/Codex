@@ -3,7 +3,11 @@ package io.github.cootshk.quicksearch.impl;
 import net.minecraft.text.Text;
 
 public interface Searchable {
-    Text getName();
+    Text quickSearch$getName();
+
+    default Text getName() {
+        return quickSearch$getName();
+    }
     default String searchString() {
         return getName().getString();
     }
