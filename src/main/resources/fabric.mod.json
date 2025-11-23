@@ -3,7 +3,7 @@
   "id": "quicksearch",
   "provides": ["codex"],
   "version": "${version}",
-  "name": "Codex",
+  "name": "QuickSearch",
   "description": "",
   "authors": [
     "Cootshk"
