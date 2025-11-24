@@ -138,7 +138,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
 
     // Searching
     private fun getTopSearchResults(text: String, num: Int): Array<Component> {
-        if (textBoxComponent.text.isNullOrEmpty()) return arrayOf()
+        if (text.isNullOrEmpty()) return arrayOf()
         val items: Map<String, Searchable> = RegistryLookup.all
         val results = FuzzySearch.extractTop(text, items.keys, num)
         if (results.isEmpty()) return arrayOf()
