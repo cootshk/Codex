@@ -1,10 +1,11 @@
 package io.github.cootshk.quicksearch.ui
 
-import io.github.cootshk.quicksearch.QuickSearchLogger
+import io.github.cootshk.quicksearch.QuickSearch
 import io.github.cootshk.quicksearch.impl.Searchable
 import io.github.cootshk.quicksearch.math.QuickSearchMathHandler
 import io.github.cootshk.quicksearch.mixin.IMixinCollapsibleContainer
 import io.github.cootshk.quicksearch.util.Colors
+import io.github.cootshk.quicksearch.util.History
 import io.github.cootshk.quicksearch.util.RegistryLookup
 import io.wispforest.owo.ui.base.BaseUIModelScreen
 import io.wispforest.owo.ui.component.BoxComponent
@@ -17,9 +18,11 @@ import io.wispforest.owo.ui.core.Component
 import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.Surface
 import me.xdrop.fuzzywuzzy.FuzzySearch
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Element
 import net.minecraft.client.input.CharInput
 import net.minecraft.client.input.KeyInput
+import net.minecraft.client.util.Clipboard
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import org.lwjgl.glfw.GLFW
@@ -29,7 +32,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     DataSource.asset(
         Identifier.of("quicksearch:searchbar"))) {
 
-    private var logger = QuickSearchLogger.getLogger()
+    private var logger = QuickSearch.logger
 
     private lateinit var coloredBox: BoxComponent
     private lateinit var textBoxComponent: TextBoxComponent
@@ -45,7 +48,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         textBoxComponent.isVisible = true
         textBoxComponent.active = true
         textBoxComponent.isFocused = true
-        textBoxComponent.setEditable(true) // minecraft makes .editable private D:
+        textBoxComponent.isEditable = true // minecraft makes .editable private D:
         this.setInitialFocus(textBoxComponent)
         coloredBox = rootComponent.childById(BoxComponent::class.java, "coloredBox")
         resultsContainer = rootComponent.childById(CollapsibleContainer::class.java, "resultsContainer")
@@ -76,12 +79,47 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
 
     override fun keyPressed(input: KeyInput): Boolean {
         return when (input.keycode) {
-            GLFW.GLFW_KEY_ESCAPE -> super.keyPressed(input)
+            GLFW.GLFW_KEY_ESCAPE -> closeScreen(input)
             // TODO: implement selection highlighting
             GLFW.GLFW_KEY_UP -> true
             GLFW.GLFW_KEY_DOWN -> true
+            GLFW.GLFW_KEY_ENTER -> openScreen()
             else -> handleInput(textBoxComponent.keyPressed(input) || super.keyPressed(input))
         }
+    }
+
+    private fun closeScreen(input: KeyInput): Boolean {
+        // The input is pretty much guaranteed to be ESC.
+        History.saveQuery(textBoxComponent.text.trim())
+        return super.keyPressed(input)
+    }
+
+    @Suppress("SameReturnValue")
+    private fun openScreen(): Boolean {
+        val text: String = textBoxComponent.text.trim()
+        if (text.isEmpty()) {
+            return true
+        }
+        History.saveQuery(text)
+        if (text.startsWith('=')) {
+            // Math result, enter to copy
+            val result: String = QuickSearchMathHandler.evaluate(text.substring(1).trim())
+            MinecraftClient.getInstance().keyboard.clipboard = result
+        } else {
+            // Search result, enter to open first
+            val topResults = getTopSearchResults(text, 1)
+            if (topResults.isNotEmpty()) {
+                val firstResult = topResults[0]
+                if (firstResult is SearchResult) {
+                    // TODO: If JEI/REI is installed, open that first if possible
+                    // TODO: Next, check if a custom handler is defined for the namespace and type (item, entity, etc)
+                    // TODO: Otherwise, copy the name to clipboard
+//                    firstResult.open()
+                }
+            }
+        }
+
+        return true
     }
 
     override fun charTyped(input: CharInput): Boolean {
@@ -115,6 +153,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     private fun showAnswerBox() {
+        logger.info("Showing math results")
         coloredBox.color(Colors.ACCENT_MATH)
         if (resultsContainer.expanded())
             resultsContainer.toggleExpansion()
@@ -122,6 +161,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             mathContainer.toggleExpansion()
     }
     private fun showSearchBox() {
+        logger.info("Showing search results")
         coloredBox.color(Colors.ACCENT_SEARCH)
         if (!resultsContainer.expanded())
             resultsContainer.toggleExpansion()
@@ -129,6 +169,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             mathContainer.toggleExpansion()
     }
     private fun hideBoxes() {
+        logger.info("Hiding boxes")
         coloredBox.color(Colors.ACCENT_NONE)
         if (resultsContainer.expanded())
             resultsContainer.toggleExpansion()
@@ -137,8 +178,9 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     // Searching
+    @Suppress("SameParameterValue")
     private fun getTopSearchResults(text: String, num: Int): Array<Component> {
-        if (text.isNullOrEmpty()) return arrayOf()
+        if (text.isEmpty()) return arrayOf()
         val items: Map<String, Searchable> = RegistryLookup.all
         val results = FuzzySearch.extractTop(text, items.keys, num)
         if (results.isEmpty()) return arrayOf()

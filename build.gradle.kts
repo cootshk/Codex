@@ -5,6 +5,7 @@ plugins {
     kotlin("jvm") version "2.2.21"
     id("fabric-loom") version "1.13-SNAPSHOT"
     id("maven-publish")
+    kotlin("kapt") version "2.2.21"
 }
 
 version = project.property("mod_version") as String
@@ -23,6 +24,10 @@ java {
     withSourcesJar()
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/quicksearch.accesswidener")
+}
+
 
 fabricApi {
     configureDataGeneration {
@@ -39,6 +44,11 @@ repositories {
 
     // owo-lib
     maven("https://maven.wispforest.io")
+
+    // Modmenu
+    maven("https://maven.terraformersmc.com/") {
+        name = "Terraformers"
+    }
 }
 
 dependencies {
@@ -51,7 +61,7 @@ dependencies {
 
     modImplementation("io.wispforest:owo-lib:${project.property("owo_version")!!}")
     // only if you plan to use owo-config
-    annotationProcessor("io.wispforest:owo-lib:${project.property("owo_version")!!}")
+    kapt("io.wispforest:owo-lib:${project.property("owo_version")!!}")
 
     // include this if you don't want force your users to install owo
     // sentinel will warn them and give the option to download it automatically
@@ -64,6 +74,9 @@ dependencies {
     // Exp4j
     implementation("net.objecthunter:exp4j:${project.property("exp4j_version")!!}")
     include("net.objecthunter:exp4j:${project.property("exp4j_version")!!}")
+
+    // Modmenu
+    modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")!!}")
 }
 
 tasks.processResources {

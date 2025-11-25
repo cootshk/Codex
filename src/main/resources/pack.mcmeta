@@ -1,9 +1,9 @@
 {
   "pack": {
     "description": "The resource pack containing QuickSearch's language and UI.",
-    "pack_format": 88,
+    "pack_format": 100,
     "min_format": 1,
-    "max_format": 1000,
-    "supported_formats": [1, 1000]
+    "max_format": 100,
+    "supported_formats": [1, 100]
   }
 }
