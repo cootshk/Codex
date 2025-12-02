@@ -12,8 +12,7 @@ import net.minecraft.item.Item
 
 class SearchResult : FlowLayout {
     val name: Component
-    constructor(entry: Searchable) :
-        super(Sizing.fixed(195), Sizing.content(), Algorithm.HORIZONTAL) {
+    constructor(entry: Searchable) : super(Sizing.fixed(195), Sizing.content(), Algorithm.HORIZONTAL) {
         val component: Component = when (entry) {
             is Item -> of(entry)
             is EntityType<*> -> of(entry)

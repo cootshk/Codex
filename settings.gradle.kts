@@ -14,7 +14,7 @@ plugins {
 stonecutter {
     create(rootProject) {
         // See https://stonecutter.kikugie.dev/wiki/start/#choosing-minecraft-versions
-        versions("1.19.2", "1.20.1", "1.21.10") // 1.18.2?
+        versions( "1.20.1", "1.21.10") // no 1.19.2 because of missing blur support.
         vcsVersion = "1.21.10"
     }
 }

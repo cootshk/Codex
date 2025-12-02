@@ -21,7 +21,7 @@
     ]
   },
   "mixins": [
-    "quicksearch.mixins.json"
+    "quicksearch.mixins.json5"
   ],
   "accessWidener": "quicksearch.classtweaker",
   "depends": {

@@ -80,11 +80,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
     //?}
 
-    //? if >1.20 {
      override fun setInitialFocus(focus: Element) {
-    //?} else {
-    /*override fun setInitialFocus(focus: Element?) {
-    *///?}
         super.setInitialFocus(this.textBoxComponent)
     }
 
