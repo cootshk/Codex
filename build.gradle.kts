@@ -43,6 +43,11 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
 
+    // ModMaven
+    maven("https://modmaven.dev/") {
+        name = "ModMaven"
+    }
+
     // owo-lib
     maven("https://maven.wispforest.io")
 
@@ -53,6 +58,9 @@ repositories {
     // Create
     maven("https://maven.blamejared.com/") // JEI
     maven("https://api.modrinth.com/maven") { name = "Modrinth" } // LazyDFU for Flywheel
+    maven("https://maven.createmod.net/") { // Flywheel
+        name = "Create Mod Maven"
+    }
     maven("https://maven.tterrag.com/") // Flywheel on both, Create and Registrate on forge
     maven("https://mvn.devos.one/releases") // Porting Lib releases
     maven("https://mvn.devos.one/snapshots") // Create and several dependencies
@@ -96,8 +104,8 @@ dependencies {
     modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")!!}")
 
     // Create
-    //? if <1.21
-//    modImplementation("com.simibubi.create:create-fabric-${project.property("minecraft_version")}:${project.property("create_fabric_version")}")
+    if (properties["create_fabric_version"] != null)
+        modImplementation("com.simibubi.create:create-fabric-${project.property("minecraft_version")}:${project.property("create_fabric_version")}")
 }
 
 tasks.processResources {

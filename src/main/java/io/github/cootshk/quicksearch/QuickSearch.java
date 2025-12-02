@@ -1,5 +1,7 @@
 package io.github.cootshk.quicksearch;
 
+import io.github.cootshk.quicksearch.api.QuickSearchHandler;
+import io.github.cootshk.quicksearch.compat.QuickSearchCompatLoader;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +14,9 @@ public class QuickSearch implements ModInitializer {
      */
     @Override
     public void onInitialize() {
-        logger.info("QuickSearch initialized!");
+        QuickSearchCompatLoader.load();
+    }
+
+    public static void addCompat(QuickSearchHandler compat) {
     }
 }

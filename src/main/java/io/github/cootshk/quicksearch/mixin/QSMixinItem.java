@@ -1,5 +1,6 @@
 package io.github.cootshk.quicksearch.mixin;
 
+import io.github.cootshk.quicksearch.api.SearchableType;
 import io.github.cootshk.quicksearch.impl.Searchable;
 import net.minecraft.item.Item;
 import net.minecraft.text.Text;
@@ -17,5 +18,9 @@ public class QSMixinItem implements Searchable {
     @Unique
     public Text quickSearch$getName() {
         return QSMixinItem$getName();
+    }
+    @Unique
+    public SearchableType quickSearch$getSearchableType() {
+        return SearchableType.ITEM;
     }
 }

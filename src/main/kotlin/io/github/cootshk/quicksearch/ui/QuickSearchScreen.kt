@@ -1,6 +1,8 @@
 package io.github.cootshk.quicksearch.ui
 
+import io.github.cootshk.quicksearch.NextHandler
 import io.github.cootshk.quicksearch.QuickSearch
+import io.github.cootshk.quicksearch.api.QuickSearchHandler
 import io.github.cootshk.quicksearch.impl.Searchable
 import io.github.cootshk.quicksearch.math.QuickSearchMathHandler
 import io.github.cootshk.quicksearch.mixin.IMixinCollapsibleContainer
@@ -100,7 +102,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             // TODO: implement selection highlighting
             GLFW.GLFW_KEY_UP -> true
             GLFW.GLFW_KEY_DOWN -> true
-            GLFW.GLFW_KEY_ENTER -> openScreen()
+            GLFW.GLFW_KEY_ENTER -> handleSelection()
             //? if >1.21 {
              else -> handleInput(textBoxComponent.keyPressed(input) || super.keyPressed(input))
             //?} else {
@@ -123,8 +125,8 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         *///?}
     }
 
-    @Suppress("SameReturnValue")
-    private fun openScreen(): Boolean {
+    @Suppress("SameReturnValue", "UNREACHABLE_CODE")
+    private fun handleSelection(): Boolean {
         val text: String = textBoxComponent.text.trim()
         if (text.isEmpty()) {
             return true
@@ -132,18 +134,20 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         History.saveQuery(text)
         if (text.startsWith('=')) {
             // Math result, enter to copy
+            // handled specially here to avoid getting a Searchable object
             val result: String = QuickSearchMathHandler.evaluate(text.substring(1).trim())
             MinecraftClient.getInstance().keyboard.clipboard = result
         } else {
-            // Search result, enter to open first
-            val topResults = getTopSearchResults(text, 1)
-            if (topResults.isNotEmpty()) {
-                val firstResult = topResults[0]
-                if (firstResult is SearchResult) {
-                    // TODO: If JEI/REI is installed, open that first if possible
-                    // TODO: Next, check if a custom handler is defined for the namespace and type (item, entity, etc)
-                    // TODO: Otherwise, copy the name to clipboard
-//                    firstResult.open()
+            // TODO: full rewrite to use the handler API
+            val result: Searchable = TODO("Implement selection handling properly")
+            for (handler in QuickSearchHandler.handlers.values) {
+                if (handler.matches(result)) {
+                    try {
+                        handler.handler(result)
+                    } catch (_: NextHandler) {
+                        continue
+                    }
+                    break
                 }
             }
         }
