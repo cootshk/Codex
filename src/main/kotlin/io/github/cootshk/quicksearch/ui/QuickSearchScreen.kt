@@ -20,9 +20,10 @@ import io.wispforest.owo.ui.core.Surface
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.Element
-import net.minecraft.client.input.CharInput
+//? if >1.21 {
 import net.minecraft.client.input.KeyInput
-import net.minecraft.client.util.Clipboard
+import net.minecraft.client.input.CharInput
+//?}
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import org.lwjgl.glfw.GLFW
@@ -30,7 +31,11 @@ import org.lwjgl.glfw.GLFW
 class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     FlowLayout::class.java,
     DataSource.asset(
+        //? >1.21 {
         Identifier.of("quicksearch:searchbar"))) {
+        //?} else {
+        /*Identifier("quicksearch:searchbar"))) {
+        *///?}
 
     private var logger = QuickSearch.logger
 
@@ -44,19 +49,19 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     private lateinit var mathResult: LabelComponent
 
     override fun build(rootComponent: FlowLayout) {
-        textBoxComponent = rootComponent.childById(TextBoxComponent::class.java, "searchBox")
+        textBoxComponent = rootComponent.childById(TextBoxComponent::class.java, "searchBox")!!
         textBoxComponent.isVisible = true
         textBoxComponent.active = true
         textBoxComponent.isFocused = true
-        textBoxComponent.isEditable = true // minecraft makes .editable private D:
+        textBoxComponent.isEditable = true
         this.setInitialFocus(textBoxComponent)
-        coloredBox = rootComponent.childById(BoxComponent::class.java, "coloredBox")
-        resultsContainer = rootComponent.childById(CollapsibleContainer::class.java, "resultsContainer")
-        resultsBox = rootComponent.childById(FlowLayout::class.java, "resultsBox")
-        resultsArea = rootComponent.childById(ScrollContainer::class.java, "resultsArea")
-        mathContainer = rootComponent.childById(CollapsibleContainer::class.java, "mathContainer")
-        mathBox = rootComponent.childById(FlowLayout::class.java, "mathBox")
-        mathResult = rootComponent.childById(LabelComponent::class.java, "mathResult")
+        coloredBox = rootComponent.childById(BoxComponent::class.java, "coloredBox")!!
+        resultsContainer = rootComponent.childById(CollapsibleContainer::class.java, "resultsContainer")!!
+        resultsBox = rootComponent.childById(FlowLayout::class.java, "resultsBox")!!
+        resultsArea = rootComponent.childById(ScrollContainer::class.java, "resultsArea")!!
+        mathContainer = rootComponent.childById(CollapsibleContainer::class.java, "mathContainer")!!
+        mathBox = rootComponent.childById(FlowLayout::class.java, "mathBox")!!
+        mathResult = rootComponent.childById(LabelComponent::class.java, "mathResult")!!
         hideBoxes()
         hideCollapsibleContainerButton(mathContainer)
         hideCollapsibleContainerButton(resultsContainer)
@@ -69,29 +74,57 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         container.contentLayout.surface(Surface.BLANK)
     }
 
+    //? if >1.21 {
     override fun setInitialFocus() {
         super.setInitialFocus(this.textBoxComponent)
     }
+    //?}
 
-    override fun setInitialFocus(element: Element) {
+    //? if >1.20 {
+     override fun setInitialFocus(focus: Element) {
+    //?} else {
+    /*override fun setInitialFocus(focus: Element?) {
+    *///?}
         super.setInitialFocus(this.textBoxComponent)
     }
 
+    //? if >1.21 {
     override fun keyPressed(input: KeyInput): Boolean {
-        return when (input.keycode) {
+        val keyCode = input.keycode
+    //?} else {
+    /*override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+    *///?}
+//        return super.keyPressed(keyCode, scanCode, modifiers)
+        return when (keyCode) {
+            //? if >1.21 {
             GLFW.GLFW_KEY_ESCAPE -> closeScreen(input)
+            //?} else {
+             /*GLFW.GLFW_KEY_ESCAPE -> closeScreen(keyCode, scanCode, modifiers)
+            *///?}
             // TODO: implement selection highlighting
             GLFW.GLFW_KEY_UP -> true
             GLFW.GLFW_KEY_DOWN -> true
             GLFW.GLFW_KEY_ENTER -> openScreen()
-            else -> handleInput(textBoxComponent.keyPressed(input) || super.keyPressed(input))
+            //? if >1.21 {
+             else -> handleInput(textBoxComponent.keyPressed(input) || super.keyPressed(input))
+            //?} else {
+             /*else -> handleInput(textBoxComponent.keyPressed(keyCode, scanCode, modifiers) || super.keyPressed(keyCode, scanCode, modifiers))
+            *///?}
         }
     }
 
-    private fun closeScreen(input: KeyInput): Boolean {
+     //? if >1.21 {
+     private fun closeScreen(input: KeyInput): Boolean {
+     //?} else {
+      /*private fun closeScreen(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+     *///?}
         // The input is pretty much guaranteed to be ESC.
         History.saveQuery(textBoxComponent.text.trim())
+        //? if >1.21 {
         return super.keyPressed(input)
+        //?} else {
+         /*return super.keyPressed(keyCode, scanCode, modifiers)
+        *///?}
     }
 
     @Suppress("SameReturnValue")
@@ -122,6 +155,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         return true
     }
 
+    //? if >1.21 {
     override fun charTyped(input: CharInput): Boolean {
         return handleInput(textBoxComponent.charTyped(input) || super.charTyped(input))
     }
@@ -129,6 +163,14 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     override fun keyReleased(keyInput: KeyInput): Boolean {
         return handleInput(textBoxComponent.keyReleased(keyInput) || super.keyReleased(keyInput))
     }
+    //?} else {
+    /*override fun charTyped(chr: Char, keyCode: Int): Boolean {
+        return handleInput(textBoxComponent.charTyped(chr, keyCode) || super.charTyped(chr, keyCode))
+    }
+    override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
+        return handleInput(textBoxComponent.keyReleased(keyCode, scanCode, modifiers) || super.keyReleased(keyCode, scanCode, modifiers))
+    }
+    *///?}
 
     // Answer
     private fun handleInput(`_`: Boolean): Boolean {

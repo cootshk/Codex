@@ -9,7 +9,12 @@ import net.minecraft.client.option.KeyBinding
 import org.lwjgl.glfw.GLFW
 
 class QuickSearchClient : ClientModInitializer {
-    val key: KeyBinding = KeyBinding("key.quicksearch.search", GLFW.GLFW_KEY_N, KeyBinding.Category.MISC)
+    //? if >1.21 {
+    val category: KeyBinding.Category = KeyBinding.Category.MISC
+    //?} else {
+     /*val category: String = KeyBinding.MISC_CATEGORY
+    *///?}
+    val key: KeyBinding = KeyBinding("key.quicksearch.search", GLFW.GLFW_KEY_N, category)
 
    private val logger = QuickSearch.logger
 

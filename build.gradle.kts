@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.net.URI
 
 plugins {
     kotlin("jvm") version "2.2.21"
@@ -15,7 +16,7 @@ base {
     archivesName.set(project.property("archives_base_name") as String)
 }
 
-val targetJavaVersion = 21
+val targetJavaVersion = if (stonecutter.eval(stonecutter.current.version, ">=1.20.5")) 21 else 17
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
@@ -25,7 +26,7 @@ java {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/quicksearch.accesswidener")
+    accessWidenerPath = file("${project.rootProject.rootDir}/src/main/resources/quicksearch.classtweaker")
 }
 
 
@@ -49,6 +50,22 @@ repositories {
     maven("https://maven.terraformersmc.com/") {
         name = "Terraformers"
     }
+    // Create
+    maven("https://maven.blamejared.com/") // JEI
+    maven("https://api.modrinth.com/maven") { name = "Modrinth" } // LazyDFU for Flywheel
+    maven("https://maven.tterrag.com/") // Flywheel on both, Create and Registrate on forge
+    maven("https://mvn.devos.one/releases") // Porting Lib releases
+    maven("https://mvn.devos.one/snapshots") // Create and several dependencies
+    maven("https://maven.jamieswhiteshirt.com/libs-release") // Reach Entity Attributes
+    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven") // Forge Config API Port
+
+    maven { // Fabric ASM for Porting Lib
+        url = URI("https://jitpack.io/")
+        @Suppress("UnstableApiUsage")
+        content { includeGroupAndSubgroups("com.github") }
+    }
+
+    maven("https://maven.shedaniel.me") // Cloth Config, REI
 }
 
 dependencies {
@@ -77,6 +94,10 @@ dependencies {
 
     // Modmenu
     modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")!!}")
+
+    // Create
+    //? if <1.21
+//    modImplementation("com.simibubi.create:create-fabric-${project.property("minecraft_version")}:${project.property("create_fabric_version")}")
 }
 
 tasks.processResources {

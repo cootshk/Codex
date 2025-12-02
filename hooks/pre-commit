@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# A simple pre-commit hook to run tests before allowing a commit.
+setopt -euo pipefail
+
+cd "$(dirname "$0")/../.." || exit 127
+./gradlew "Reset active project" | git add .
+exit $?

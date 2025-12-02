@@ -13,9 +13,6 @@
   "icon": "assets/quicksearch/icon.png",
   "environment": "client",
   "entrypoints": {
-    "fabric-datagen": [
-      "io.github.cootshk.quicksearch.client.QuickSearchDataGenerator"
-    ],
     "client": [
       "io.github.cootshk.quicksearch.client.QuickSearchClient"
     ],
@@ -26,7 +23,7 @@
   "mixins": [
     "quicksearch.mixins.json"
   ],
-  "accessWidener": "quicksearch.accesswidener",
+  "accessWidener": "quicksearch.classtweaker",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",
