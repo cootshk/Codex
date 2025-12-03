@@ -6,16 +6,14 @@ import com.simibubi.create.foundation.ponder.ui.PonderUI
 import io.github.cootshk.quicksearch.QuickSearch
 import io.github.cootshk.quicksearch.api.QuickSearchHandler
 import io.github.cootshk.quicksearch.api.SearchableType
-import net.minecraft.item.Item
+import net.minecraft.world.item.Item
 
-object CreateCompat : QuickSearchHandler("create") {
+object CreateCompat : QuickSearchHandler() {
     override fun initialize() {
         register(null, SearchableType.ITEM, 0) { s ->
             // Open Ponder, if available
-            val i = s as Item
             try {
-                val ui = PonderUI.of(i.defaultStack)
-                ScreenOpener.open(ui)
+                ScreenOpener.open(PonderUI.of((s as Item).defaultInstance))
             } catch (e: Exception) {
                 QuickSearch.logger.info("No ponder screen found, falling back a layer!")
                 skip();

@@ -19,7 +19,7 @@
     "main": [
       "io.github.cootshk.quicksearch.QuickSearch"
     ],
-    "jei_mod_plugins": [
+    "jei_mod_plugin": [
       "io.github.cootshk.quicksearch.compat.jei.JEIPlugin"
     ]
   },

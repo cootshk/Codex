@@ -1,4 +1,4 @@
 classTweaker v1 named
-accessible method net/minecraft/client/gui/widget/TextFieldWidget isEditable ()Z
-accessible method net/minecraft/client/gui/widget/TextFieldWidget setEditable (Z)V
-accessible method net/minecraft/client/gui/widget/ClickableWidget setFocused (Z)V
+accessible method net/minecraft/client/gui/components/EditBox isEditable ()Z
+accessible method net/minecraft/client/gui/components/EditBox setEditable (Z)V
+accessible method net/minecraft/client/gui/components/AbstractWidget setFocused (Z)V

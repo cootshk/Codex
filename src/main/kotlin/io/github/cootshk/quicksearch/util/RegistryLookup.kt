@@ -1,10 +1,10 @@
 package io.github.cootshk.quicksearch.util
 
 import io.github.cootshk.quicksearch.impl.Searchable
-import net.minecraft.entity.EntityType
-import net.minecraft.entity.SpawnGroup
-import net.minecraft.item.Item
-import net.minecraft.registry.Registries
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.entity.MobCategory
+import net.minecraft.world.item.Item
+import net.minecraft.core.registries.BuiltInRegistries
 
 object RegistryLookup {
 
@@ -24,14 +24,14 @@ object RegistryLookup {
 
     @JvmStatic
     fun lookupItems(): Map<String, Item> {
-        return Registries.ITEM.toList().toTypedArray().associateBy { item ->
+        return BuiltInRegistries.ITEM.toList().toTypedArray().associateBy { item ->
             searchString(item)
         }
     }
     @JvmStatic
     fun lookupEntities(): Map<String, EntityType<*>> {
-        return Registries.ENTITY_TYPE.filter { entityType ->
-            !entityType.spawnGroup.equals(SpawnGroup.MISC)
+        return BuiltInRegistries.ENTITY_TYPE.filter { entityType ->
+            !entityType.category.equals(MobCategory.MISC)
         }.associateBy { entityType ->
             searchString(entityType)
         }

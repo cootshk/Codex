@@ -20,23 +20,23 @@ import io.wispforest.owo.ui.core.Component
 import io.wispforest.owo.ui.core.Insets
 import io.wispforest.owo.ui.core.Surface
 import me.xdrop.fuzzywuzzy.FuzzySearch
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.Element
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.components.events.GuiEventListener
 //? if >1.21 {
-import net.minecraft.client.input.KeyInput
-import net.minecraft.client.input.CharInput
+import net.minecraft.client.input.KeyEvent
+import net.minecraft.client.input.CharacterEvent
 //?}
-import net.minecraft.text.Text
-import net.minecraft.util.Identifier
+import net.minecraft.network.chat.Component as Text
+import net.minecraft.resources.ResourceLocation
 import org.lwjgl.glfw.GLFW
 
 class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     FlowLayout::class.java,
     DataSource.asset(
         //? >1.21 {
-        Identifier.of("quicksearch:searchbar"))) {
+        ResourceLocation.parse("quicksearch:searchbar"))) {
         //?} else {
-        /*Identifier("quicksearch:searchbar"))) {
+        /*ResourceLocation("quicksearch:searchbar"))) {
         *///?}
 
     private var logger = QuickSearch.logger
@@ -82,13 +82,13 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
     //?}
 
-     override fun setInitialFocus(focus: Element) {
+     override fun setInitialFocus(focus: GuiEventListener) {
         super.setInitialFocus(this.textBoxComponent)
     }
 
     //? if >1.21 {
-    override fun keyPressed(input: KeyInput): Boolean {
-        val keyCode = input.keycode
+    override fun keyPressed(input: KeyEvent): Boolean {
+        val keyCode = input.input()
     //?} else {
     /*override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
     *///?}
@@ -112,12 +112,12 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
      //? if >1.21 {
-     private fun closeScreen(input: KeyInput): Boolean {
+     private fun closeScreen(input: KeyEvent): Boolean {
      //?} else {
       /*private fun closeScreen(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
      *///?}
         // The input is pretty much guaranteed to be ESC.
-        History.saveQuery(textBoxComponent.text.trim())
+        History.saveQuery(textBoxComponent.value.trim())
         //? if >1.21 {
         return super.keyPressed(input)
         //?} else {
@@ -127,7 +127,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
 
     @Suppress("SameReturnValue", "UNREACHABLE_CODE")
     private fun handleSelection(): Boolean {
-        val text: String = textBoxComponent.text.trim()
+        val text: String = textBoxComponent.value.trim()
         if (text.isEmpty()) {
             return true
         }
@@ -136,7 +136,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             // Math result, enter to copy
             // handled specially here to avoid getting a Searchable object
             val result: String = QuickSearchMathHandler.evaluate(text.substring(1).trim())
-            MinecraftClient.getInstance().keyboard.clipboard = result
+            Minecraft.getInstance().keyboardHandler.clipboard = result
         } else {
             val result: Searchable = getTopSearchResults(text, 1).keys.first()
             for (handler in QuickSearchHandler.handlers.values) {
@@ -155,11 +155,11 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     //? if >1.21 {
-    override fun charTyped(input: CharInput): Boolean {
+    override fun charTyped(input: CharacterEvent): Boolean {
         return handleInput(textBoxComponent.charTyped(input) || super.charTyped(input))
     }
 
-    override fun keyReleased(keyInput: KeyInput): Boolean {
+    override fun keyReleased(keyInput: KeyEvent): Boolean {
         return handleInput(textBoxComponent.keyReleased(keyInput) || super.keyReleased(keyInput))
     }
     //?} else {
@@ -173,7 +173,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
 
     // Answer
     private fun handleInput(`_`: Boolean): Boolean {
-        val text = textBoxComponent.text
+        val text = textBoxComponent.value
         if (text.isNullOrBlank() || text.isEmpty()) {
             hideBoxes()
             return `_`
@@ -181,7 +181,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
         if (text.startsWith('=')) {
             showAnswerBox()
             val result: String = QuickSearchMathHandler.evaluate(text.substring(1).trim())
-            mathResult.text(Text.of(result))
+            mathResult.text(Text.nullToEmpty(result))
         } else {
             showSearchBox()
             // fill the search box

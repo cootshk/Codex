@@ -45,11 +45,6 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
 
-    // ModMaven
-    maven("https://modmaven.dev/") {
-        name = "ModMaven"
-    }
-
     // owo-lib
     maven("https://maven.wispforest.io")
 
@@ -81,6 +76,11 @@ repositories {
 
     // JEI
     maven("https://maven.blamejared.com/")
+
+    // ModMaven
+    maven("https://modmaven.dev/") {
+        name = "ModMaven"
+    }
 }
 
 val mc = project.property("minecraft_version") as String
@@ -88,7 +88,7 @@ val mc = project.property("minecraft_version") as String
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:$mc")
-    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}")
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
@@ -135,9 +135,9 @@ dependencies {
 //    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.property("rei_version")}")
     // JEI
     // compile against the JEI API but do not include it at runtime
-    modImplementation("mezz.jei:jei-$mc-fabric-api:${project.property("jei_version")}")
+    modCompileOnlyApi("mezz.jei:jei-$mc-fabric:${project.property("jei_version")}")
     // at runtime, use the full JEI jar for Fabric
-    modRuntimeOnly("mezz.jei:jei-$mc-fabric:${project.property("jei_version")}")
+//    modRuntimeOnly("mezz.jei:jei-$mc-fabric:${project.property("jei_version")}")
 }
 
 stonecutter {

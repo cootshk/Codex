@@ -6,15 +6,6 @@ import net.fabricmc.loader.api.FabricLoader
 import kotlin.math.max
 
 abstract class QuickSearchHandler {
-    protected constructor() {
-        initialize()
-    }
-    protected constructor(modId: String) {
-        if (FabricLoader.getInstance().isModLoaded(modId)) {
-            initialize()
-        }
-    }
-
     abstract fun initialize()
 
     internal fun register(match: Regex?, matchClass: SearchableType?, handler: (Searchable) -> Unit) {
@@ -30,7 +21,7 @@ abstract class QuickSearchHandler {
         register(match, null, priority, handler)
     }
     internal fun register(namespace: String,  matchClass: SearchableType?, handler: (Searchable) -> Unit) {
-        register(match(namespace), matchClass, getHighestPriority(), handler)
+        register(match(namespace), matchClass, highestPriority, handler)
     }
     internal fun register(namespace: String, handler: (Searchable) -> Unit) {
         register(namespace, null, handler)
@@ -74,9 +65,6 @@ abstract class QuickSearchHandler {
         }
         private fun match(namespace: String): Regex {
             return Regex("^${Regex.escape(namespace.removeSuffix(":"))}:.*$")
-        }
-        fun getHighestPriority(): Int {
-            return highestPriority
         }
         fun getHighestPriority(min: Int): Int {
             return max(min, highestPriority)

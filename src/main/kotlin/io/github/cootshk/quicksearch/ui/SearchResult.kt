@@ -7,8 +7,8 @@ import io.wispforest.owo.ui.core.Component
 import io.wispforest.owo.ui.core.HorizontalAlignment
 import io.wispforest.owo.ui.core.Sizing
 import io.wispforest.owo.ui.core.VerticalAlignment
-import net.minecraft.entity.EntityType
-import net.minecraft.item.Item
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.item.Item
 
 class SearchResult : FlowLayout {
     val name: Component
@@ -30,7 +30,7 @@ class SearchResult : FlowLayout {
         val verticalSize: Sizing get() = Sizing.fixed(20)
 
         private fun of(item: Item): Component {
-            val itemComponent = Components.item(item.defaultStack)
+            val itemComponent = Components.item(item.defaultInstance)
                 .sizing(horizontalSize, verticalSize)
             return itemComponent
         }

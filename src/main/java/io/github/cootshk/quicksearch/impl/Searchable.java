@@ -1,14 +1,14 @@
 package io.github.cootshk.quicksearch.impl;
 
 import io.github.cootshk.quicksearch.api.SearchableType;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public interface Searchable {
-    Text quickSearch$getName();
+    Component quickSearch$getName();
     String quickSearch$getIdentifier();
     SearchableType quickSearch$getSearchableType();
 
-    default Text getName() {
+    default Component getName() {
         return quickSearch$getName();
     }
     default String getSearchString() {
