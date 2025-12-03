@@ -8,14 +8,9 @@ data class HandlerEntry(
     val handler: (Searchable) -> Unit,
 ) {
     private fun matchesType(searchable: Searchable): Boolean {
-        return matchClass != null || searchable.type == matchClass
+        return matchClass == null || searchable.type == matchClass
     }
     fun matches(searchable: Searchable): Boolean {
         return matchesType(searchable) && matchRegex.matches(searchable.identifier)
-    }
-    companion object {
-        fun match(namespace: String): Regex {
-            return Regex("^${Regex.escape(namespace.removeSuffix(":"))}:.*$")
-        }
     }
 }

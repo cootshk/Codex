@@ -138,8 +138,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             val result: String = QuickSearchMathHandler.evaluate(text.substring(1).trim())
             MinecraftClient.getInstance().keyboard.clipboard = result
         } else {
-            // TODO: full rewrite to use the handler API
-            val result: Searchable = TODO("Implement selection handling properly")
+            val result: Searchable = getTopSearchResults(text, 1).keys.first()
             for (handler in QuickSearchHandler.handlers.values) {
                 if (handler.matches(result)) {
                     try {
@@ -187,7 +186,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             showSearchBox()
             // fill the search box
             resultsBox.clearChildren()
-            for (child in getTopSearchResults(text.trim(), 4)) {
+            for ((index: Searchable, child: Component) in getTopSearchResults(text.trim(), 4)) {
                 resultsBox.child(child)
             }
         }
@@ -195,7 +194,6 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     private fun showAnswerBox() {
-        logger.info("Showing math results")
         coloredBox.color(Colors.ACCENT_MATH)
         if (resultsContainer.expanded())
             resultsContainer.toggleExpansion()
@@ -203,7 +201,6 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             mathContainer.toggleExpansion()
     }
     private fun showSearchBox() {
-        logger.info("Showing search results")
         coloredBox.color(Colors.ACCENT_SEARCH)
         if (!resultsContainer.expanded())
             resultsContainer.toggleExpansion()
@@ -211,7 +208,6 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             mathContainer.toggleExpansion()
     }
     private fun hideBoxes() {
-        logger.info("Hiding boxes")
         coloredBox.color(Colors.ACCENT_NONE)
         if (resultsContainer.expanded())
             resultsContainer.toggleExpansion()
@@ -221,13 +217,13 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
 
     // Searching
     @Suppress("SameParameterValue")
-    private fun getTopSearchResults(text: String, num: Int): Array<Component> {
-        if (text.isEmpty()) return arrayOf()
+    private fun getTopSearchResults(text: String, num: Int): Map<Searchable, Component> {
+        if (text.isEmpty()) return emptyMap()
         val items: Map<String, Searchable> = RegistryLookup.all
         val results = FuzzySearch.extractTop(text, items.keys, num)
-        if (results.isEmpty()) return arrayOf()
-        return results.map { result ->
-            SearchResult(items[result.string]!!)
-        }.toTypedArray()
+        if (results.isEmpty()) return emptyMap()
+        return results.associate {result ->
+            items[result.string]!! to SearchResult(items[result.string]!!)
+        }
     }
 }

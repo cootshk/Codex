@@ -2,37 +2,47 @@ package io.github.cootshk.quicksearch.api
 
 import io.github.cootshk.quicksearch.NextHandler
 import io.github.cootshk.quicksearch.impl.Searchable
+import net.fabricmc.loader.api.FabricLoader
+import kotlin.math.max
 
 abstract class QuickSearchHandler {
+    protected constructor() {
+        initialize()
+    }
+    protected constructor(modId: String) {
+        if (FabricLoader.getInstance().isModLoaded(modId)) {
+            initialize()
+        }
+    }
 
     abstract fun initialize()
 
-    final fun register(match: Regex, matchClass: SearchableType?, handler: (Searchable) -> Unit) {
-        register(match, matchClass, getHighestPriority(), handler)
+    internal fun register(match: Regex?, matchClass: SearchableType?, handler: (Searchable) -> Unit) {
+        register(match, matchClass, getHighestPriority(1000), handler)
     }
-    final fun register(match: Regex, handler: (Searchable) -> Unit) {
+    internal fun register(match: Regex?, handler: (Searchable) -> Unit) {
         register(match, null, handler)
     }
-    final fun register(match: Regex, matchClass: SearchableType?, priority: Int, handler: (Searchable) -> Unit) {
-        handlers += priority to HandlerEntry(match, matchClass, handler)
+    internal fun register(match: Regex?, matchClass: SearchableType?, priority: Int, handler: (Searchable) -> Unit) {
+        addHandler(priority, HandlerEntry(match ?: Regex(".*"), matchClass, handler))
     }
-    final fun register(match: Regex, priority: Int, handler: (Searchable) -> Unit) {
+    internal fun register(match: Regex?, priority: Int, handler: (Searchable) -> Unit) {
         register(match, null, priority, handler)
     }
-    final fun register(namespace: String,  matchClass: SearchableType?, handler: (Searchable) -> Unit) {
-        register(HandlerEntry.match(namespace), matchClass, handler)
+    internal fun register(namespace: String,  matchClass: SearchableType?, handler: (Searchable) -> Unit) {
+        register(match(namespace), matchClass, getHighestPriority(), handler)
     }
-    final fun register(namespace: String, handler: (Searchable) -> Unit) {
+    internal fun register(namespace: String, handler: (Searchable) -> Unit) {
         register(namespace, null, handler)
     }
-    final fun register(namespace: String, matchClass: SearchableType?, priority: Int, handler: (Searchable) -> Unit) {
-        register(HandlerEntry.match(namespace), matchClass, priority, handler)
+    internal fun register(namespace: String, matchClass: SearchableType?, priority: Int, handler: (Searchable) -> Unit) {
+        register(match(namespace), matchClass, priority, handler)
     }
-    final fun register(namespace: String, priority: Int, handler: (Searchable) -> Unit) {
+    internal fun register(namespace: String, priority: Int, handler: (Searchable) -> Unit) {
         register(namespace, null, priority, handler)
     }
 
-    final fun skip() { throw NextHandler() }
+    internal fun skip() { throw NextHandler() }
 
     companion object {
         var handlers: Map<Int, HandlerEntry> = mutableMapOf()
@@ -41,8 +51,35 @@ abstract class QuickSearchHandler {
             }
         private val highestPriority: Int
             get() = (handlers.keys.lastOrNull() ?: -1) + 1
-    }
-    fun getHighestPriority(): Int {
-        return highestPriority
+        private fun addHandler(priority: Int, entry: HandlerEntry) {
+            // To ensure no duplicate priorities exist, we recreate the map
+            var entry = entry
+            val mutable = handlers.toMutableMap()
+            var target: Int = priority
+            while (true) {
+                if (!mutable.containsKey(target)) {
+                    mutable[target] = entry
+                    break
+                }
+                // Shift up
+                val existing = mutable[target]!!
+                mutable[target] = entry
+                entry = existing
+                target += 1
+                if (target == Int.MAX_VALUE) {
+                    throw IllegalStateException("Attempted to register a handler but no available priority slots exist. (Try lowering the priority of some handlers?)")
+                }
+            }
+            handlers = mutable
+        }
+        private fun match(namespace: String): Regex {
+            return Regex("^${Regex.escape(namespace.removeSuffix(":"))}:.*$")
+        }
+        fun getHighestPriority(): Int {
+            return highestPriority
+        }
+        fun getHighestPriority(min: Int): Int {
+            return max(min, highestPriority)
+        }
     }
 }

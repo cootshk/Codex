@@ -16,7 +16,4 @@ public class QuickSearch implements ModInitializer {
     public void onInitialize() {
         QuickSearchCompatLoader.load();
     }
-
-    public static void addCompat(QuickSearchHandler compat) {
-    }
 }

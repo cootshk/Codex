@@ -1,5 +1,7 @@
+import org.gradle.kotlin.dsl.stonecutter
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.tooling.core.linearClosureSequence
 import java.net.URI
 
 plugins {
@@ -73,39 +75,73 @@ repositories {
         content { includeGroupAndSubgroups("com.github") }
     }
 
-    maven("https://maven.shedaniel.me") // Cloth Config, REI
+    // REI
+    maven("https://maven.architectury.dev/")
+    maven("https://maven.shedaniel.me")
+
+    // JEI
+    maven("https://maven.blamejared.com/")
 }
+
+val mc = project.property("minecraft_version") as String
 
 dependencies {
     // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")!!}")
-    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")!!}")
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")!!}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")!!}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")!!}")
+    minecraft("com.mojang:minecraft:$mc")
+    mappings("net.fabricmc:yarn:${project.property("yarn_mappings")}")
+    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+    modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
 
-    modImplementation("io.wispforest:owo-lib:${project.property("owo_version")!!}")
+    modImplementation("io.wispforest:owo-lib:${project.property("owo_version")}")
     // only if you plan to use owo-config
-    kapt("io.wispforest:owo-lib:${project.property("owo_version")!!}")
+    kapt("io.wispforest:owo-lib:${project.property("owo_version")}")
 
     // include this if you don't want force your users to install owo
     // sentinel will warn them and give the option to download it automatically
-    include("io.wispforest:owo-sentinel:${project.property("owo_version")!!}")
+    include("io.wispforest:owo-sentinel:${project.property("owo_version")}")
 
     // Fuzzywuzzy
-    implementation("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")!!}")
-    include("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")!!}")
+    implementation("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
+    include("me.xdrop:fuzzywuzzy:${project.property("fuzzywuzzy_version")}")
 
     // Exp4j
-    implementation("net.objecthunter:exp4j:${project.property("exp4j_version")!!}")
-    include("net.objecthunter:exp4j:${project.property("exp4j_version")!!}")
+    implementation("net.objecthunter:exp4j:${project.property("exp4j_version")}")
+    include("net.objecthunter:exp4j:${project.property("exp4j_version")}")
 
     // Modmenu
-    modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")!!}")
+    modImplementation("com.terraformersmc:modmenu:${project.property("modmenu_version")}")
 
     // Create
-    if (properties["create_fabric_version"] != null)
-        modImplementation("com.simibubi.create:create-fabric-${project.property("minecraft_version")}:${project.property("create_fabric_version")}")
+    if (properties["create_fabric_version"] != null) {
+        modImplementation(
+            "com.simibubi.create:create-fabric-$mc:${
+                project.property(
+                    "create_fabric_version"
+                )
+            }"
+        )
+        modRuntimeOnly(
+            "com.simibubi.create:create-fabric-$mc:${
+                project.property(
+                    "create_fabric_version"
+                )
+            }"
+        )
+    }
+
+    // REI
+    modCompileOnlyApi("me.shedaniel:RoughlyEnoughItems-fabric:${project.property("rei_version")}")
+//    modRuntimeOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.property("rei_version")}")
+    // JEI
+    // compile against the JEI API but do not include it at runtime
+    modImplementation("mezz.jei:jei-$mc-fabric-api:${project.property("jei_version")}")
+    // at runtime, use the full JEI jar for Fabric
+    modRuntimeOnly("mezz.jei:jei-$mc-fabric:${project.property("jei_version")}")
+}
+
+stonecutter {
+    constants["create"] = (properties["create_fabric_version"] != null)
 }
 
 tasks.processResources {

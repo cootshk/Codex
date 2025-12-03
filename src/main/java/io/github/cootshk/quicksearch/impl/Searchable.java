@@ -5,6 +5,7 @@ import net.minecraft.text.Text;
 
 public interface Searchable {
     Text quickSearch$getName();
+    String quickSearch$getIdentifier();
     SearchableType quickSearch$getSearchableType();
 
     default Text getName() {
@@ -14,7 +15,7 @@ public interface Searchable {
         return getName().getString();
     }
     default String getIdentifier() {
-        return getName().toString();
+        return quickSearch$getIdentifier();
     }
     default SearchableType getType() {
         return quickSearch$getSearchableType();
