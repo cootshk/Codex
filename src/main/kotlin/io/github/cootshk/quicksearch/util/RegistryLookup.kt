@@ -10,7 +10,7 @@ object RegistryLookup {
 
     @JvmStatic
     fun searchString(c: Any): String {
-        return (c as Searchable).getSearchString()
+        return (c as Searchable).searchString
     }
 
     @JvmStatic

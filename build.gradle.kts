@@ -45,6 +45,11 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
 
+    // Parchment
+    maven("https://maven.parchmentmc.org") {
+        name = "ParchmentMC"
+    }
+
     // owo-lib
     maven("https://maven.wispforest.io")
 
@@ -88,7 +93,11 @@ val mc = project.property("minecraft_version") as String
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:$mc")
-    mappings(loom.officialMojangMappings())
+    @Suppress("UnstableApiUsage")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-$mc:${project.property("parchment_version")}@zip")
+    })
     modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")

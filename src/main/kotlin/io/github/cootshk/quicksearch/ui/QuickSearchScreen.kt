@@ -216,7 +216,7 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
             showSearchBox()
             // fill the search box
             resultsBox.clearChildren()
-            for ((index: Searchable, child: Component) in getTopSearchResults(text.trim(), 4)) {
+            for ((index: Searchable, child: Component) in getTopSearchResults(text.trim(), QuickSearchClient.config.displayedResults())) {
                 resultsBox.child(child)
             }
         }
@@ -246,16 +246,12 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     }
 
     // Searching
-    @Suppress("SameParameterValue")
     private fun getTopSearchResults(text: String, num: Int): Map<Searchable, Component> {
         if (text.length < QuickSearchClient.config.requiredLetters()) return emptyMap()
         val items: Map<String, Searchable> = RegistryLookup.all
-        val results = FuzzySearch.extractTop(text, items.keys, num)
+        val results = FuzzySearch.extractTop(text.lowercase(), items.keys.map { it.lowercase() }, num)
         if (results.isEmpty()) return emptyMap()
-        val targetScore: Int = (QuickSearchClient.config.requiredSearchScore() * 100).toInt()
-        return results.filter { result ->
-            result.score >= targetScore
-        }.associate { result ->
+        return results.associate { result ->
             items[result.string]!! to SearchResult(items[result.string]!!)
         }
     }

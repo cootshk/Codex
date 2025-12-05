@@ -4,5 +4,6 @@
   "text.config.quicksearch.title": "QuickSearch Settings",
   "text.config.quicksearch.option.maxSearchResults": "Number of results to store",
   "text.config.quicksearch.option.requiredSearchScore": "Threshold score for search results",
-  "text.config.quicksearch.option.requiredLetters": "Minimum letters to start searching"
+  "text.config.quicksearch.option.requiredLetters": "Minimum letters to start searching",
+  "text.config.quicksearch.option.displayedResults": "Number of results to display",
 }

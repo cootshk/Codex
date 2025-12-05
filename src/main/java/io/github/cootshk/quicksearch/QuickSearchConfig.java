@@ -9,8 +9,8 @@ import io.wispforest.owo.config.annotation.RangeConstraint;
 public class QuickSearchConfig {
     @RangeConstraint(min = 0.0, max = 1000.0, decimalPlaces = 0)
     public int maxSearchResults = 100;
-    @RangeConstraint(min = 0.0, max = 1.0, decimalPlaces = 2)
-    public double requiredSearchScore = 0.15;
     @RangeConstraint(min = 1.0, max = 15.0, decimalPlaces = 0)
-    public int requiredLetters = 3;
+    public int requiredLetters = 1;
+    @RangeConstraint(min = 1.0, max = 6.0, decimalPlaces = 0)
+    public int displayedResults = 4;
 }
