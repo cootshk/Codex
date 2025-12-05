@@ -3,6 +3,7 @@ package io.github.cootshk.quicksearch.ui
 import io.github.cootshk.quicksearch.NextHandler
 import io.github.cootshk.quicksearch.QuickSearch
 import io.github.cootshk.quicksearch.api.QuickSearchHandler
+import io.github.cootshk.quicksearch.client.QuickSearchClient
 import io.github.cootshk.quicksearch.impl.Searchable
 import io.github.cootshk.quicksearch.math.QuickSearchMathHandler
 import io.github.cootshk.quicksearch.mixin.IMixinCollapsibleContainer
@@ -100,8 +101,8 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
              /*GLFW.GLFW_KEY_ESCAPE -> closeScreen(keyCode, scanCode, modifiers)
             *///?}
             // TODO: implement selection highlighting
-            GLFW.GLFW_KEY_UP -> true
-            GLFW.GLFW_KEY_DOWN -> true
+            GLFW.GLFW_KEY_UP -> history(true)
+            GLFW.GLFW_KEY_DOWN -> history(false)
             GLFW.GLFW_KEY_ENTER -> handleSelection()
             //? if >1.21 {
              else -> handleInput(textBoxComponent.keyPressed(input) || super.keyPressed(input))
@@ -109,6 +110,35 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
              /*else -> handleInput(textBoxComponent.keyPressed(keyCode, scanCode, modifiers) || super.keyPressed(keyCode, scanCode, modifiers))
             *///?}
         }
+    }
+
+    private var index: Int = 0
+
+    // up: true
+    // down: false
+    private fun history(direction: Boolean): Boolean {
+        if (direction) {
+            index++
+        } else {
+            index--
+            if (index < 0) {
+                index = 0
+            }
+        }
+        val history = History.loadHistory()
+        if (history.isEmpty()) {
+            index = 0
+        }
+        if (index == 0) {
+            textBoxComponent.value = ""
+            return false
+        }
+        if (index > history.size) {
+            index = history.size
+        }
+        textBoxComponent.value = history[index - 1]
+
+        return true
     }
 
      //? if >1.21 {
@@ -218,11 +248,14 @@ class QuickSearchScreen : BaseUIModelScreen<FlowLayout>(
     // Searching
     @Suppress("SameParameterValue")
     private fun getTopSearchResults(text: String, num: Int): Map<Searchable, Component> {
-        if (text.isEmpty()) return emptyMap()
+        if (text.length < QuickSearchClient.config.requiredLetters()) return emptyMap()
         val items: Map<String, Searchable> = RegistryLookup.all
         val results = FuzzySearch.extractTop(text, items.keys, num)
         if (results.isEmpty()) return emptyMap()
-        return results.associate {result ->
+        val targetScore: Int = (QuickSearchClient.config.requiredSearchScore() * 100).toInt()
+        return results.filter { result ->
+            result.score >= targetScore
+        }.associate { result ->
             items[result.string]!! to SearchResult(items[result.string]!!)
         }
     }

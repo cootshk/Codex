@@ -1,4 +1,8 @@
 {
   "key.quicksearch.search": "Search...",
-  "quicksearch.description.default": "No description available..."
+  "quicksearch.description.default": "No description available...",
+  "text.config.quicksearch.title": "QuickSearch Settings",
+  "text.config.quicksearch.option.maxSearchResults": "Number of results to store",
+  "text.config.quicksearch.option.requiredSearchScore": "Threshold score for search results",
+  "text.config.quicksearch.option.requiredLetters": "Minimum letters to start searching"
 }
